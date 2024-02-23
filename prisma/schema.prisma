@@ -14,7 +14,8 @@ model ARTDrugOrder {
   id              String              @id @default(uuid()) @db.Uuid
   patient         Json
   appointment     Json?
-  event           Json?
+  eventId         String?             @db.Uuid
+  event           ARTEvent?           @relation(fields: [eventId], onDelete: SetNull, references: [id])
   deliveryAddress Json
   deliveryMethod  OrderDeliveryMethod
   courierService  Json?
@@ -25,12 +26,13 @@ model ARTDrugOrder {
   createdAt       DateTime            @default(now())
   updatedAt       DateTime            @updatedAt
   deliveries      ARTDrugDelivery[]
+  feedBacks       ARTEventFeedBack[]
 }
 
 model ARTDrugDelivery {
   id              String         @id @default(uuid()) @db.Uuid
-  orderId         String         @db.Uuid
-  order           ARTDrugOrder   @relation(fields: [orderId], onDelete: Cascade, references: [id])
+  orderId         String?        @db.Uuid
+  order           ARTDrugOrder?  @relation(fields: [orderId], onDelete: SetNull, references: [id])
   patient         Json //Subscriber
   services        String[]       @default([])
   method          DeliveryMethod
@@ -45,17 +47,33 @@ model ARTDrugDelivery {
 }
 
 model ARTEvent {
-  id                        String            @id @default(uuid()) @db.Uuid
+  id                        String             @id @default(uuid()) @db.Uuid
   title                     String
   distributionTime          DateTime
   distributionVenue         String
-  remiderNortificationDates DateTime[]        @default([])
-  groupId                   String            @db.Uuid
-  group                     ARTGroup          @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  createdAt                 DateTime          @default(now())
-  updatedAt                 DateTime          @updatedAt
+  remiderNortificationDates DateTime[]         @default([])
+  groupId                   String             @db.Uuid
+  group                     ARTGroup           @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  createdAt                 DateTime           @default(now())
+  updatedAt                 DateTime           @updatedAt
   deliveries                ARTDrugDelivery[]
-  remarks                   String            @db.Text
+  remarks                   String             @db.Text
+  orders                    ARTDrugOrder[]
+  feedBacks                 ARTEventFeedBack[]
+}
+
+model ARTEventFeedBack {
+  id                    String        @id @default(uuid()) @db.Uuid
+  eventId               String?       @db.Uuid
+  event                 ARTEvent?     @relation(fields: [eventId], onDelete: SetNull, references: [id])
+  confirmedAttendance   Boolean
+  requestedHomeDelivery Boolean
+  // orderId             String?       @db.Uuid
+  // order               ARTDrugOrder? @relation(fields: [orderId], onDelete: SetNull, references: [id])
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  ARTDrugOrder          ARTDrugOrder? @relation(fields: [aRTDrugOrderId], references: [id])
+  aRTDrugOrderId        String?       @db.Uuid
 }
 
 model ARTGroup {
