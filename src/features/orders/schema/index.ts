@@ -9,7 +9,7 @@ export const OrderSchema = z
     appointment: z.string().optional(),
     careReceiver: z.string().optional(),
     deliveryMethod: z.enum(["in_parcel", "in_person"]),
-    courierService: z.string().optional(),
+    courierService: z.string().uuid().optional(),
     deliveryPerson: z
       .object({
         fullName: z.string(),
@@ -19,7 +19,7 @@ export const OrderSchema = z
       })
       .optional(),
     phoneNumber: z.string(),
-    deliveryLocation: z.object({
+    deliveryAddress: z.object({
       latitude: z.coerce.number(),
       longitude: z.coerce.number(),
       address: z.string(),

@@ -1,6 +1,9 @@
 import moment from "moment/moment";
 import { Repository } from "../../../shared/types";
 import { TreatmentSupport } from "../entities";
+// import { v4 as uuidv4 } from "uuid";
+
+
 
 export class TreatentSupportRepository implements Repository<TreatmentSupport> {
   create(entity: TreatmentSupport): Promise<TreatmentSupport>;
@@ -11,6 +14,8 @@ export class TreatentSupportRepository implements Repository<TreatmentSupport> {
   findOneById(id: string): Promise<TreatmentSupport | undefined> {
     throw new Error("Method not implemented.");
   }
+
+  
   async findAll(): Promise<TreatmentSupport[]> {
     return [
       {

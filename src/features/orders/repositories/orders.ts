@@ -86,10 +86,12 @@ export class ARTDrugOrderRepository implements Repository<ARTDrugOrder> {
     createdAt: true,
     updatedAt: true,
   };
-  create(entity: ARTDrugOrder): Promise<ARTDrugOrder>;
-  create(entity: Record<string, any>): Promise<ARTDrugOrder>;
-  create(entity: unknown): Promise<ARTDrugOrder> {
-    throw new Error("Method not implemented.");
+
+  create(entity: Partial<ARTDrugOrder>): Promise<ARTDrugOrder> {
+    return ARTDrugOrderModel.create({
+      data: entity as any,
+      select: this.selectFields,
+    });
   }
   findOneById(id: string): Promise<ARTDrugOrder | undefined> {
     throw new Error("Method not implemented.");
