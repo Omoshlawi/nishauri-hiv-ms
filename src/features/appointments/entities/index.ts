@@ -5,6 +5,6 @@ export interface Appointment extends Entity {
   cccNumber: string;
   appointmentType: "Re-Fill" | "Clinical Review" | "PCR" | "Lab Investigation";
   appointmentDate: string;
-  dateAttended: string;
+  dateAttended?: string;
   nextAppointmentDate: string;
 }

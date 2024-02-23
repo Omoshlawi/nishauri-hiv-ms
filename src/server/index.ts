@@ -4,7 +4,8 @@ import morgan from "morgan";
 import { MEDIA_ROOT, configuration } from "../utils";
 import { handleErrors } from "../middlewares";
 import logger from "../shared/logger";
-import {default as appointmentRouter} from "../features/appointments/routes";
+import { default as appointmentRouter } from "../features/appointments/routes";
+import { default as treatmentSupportRouter } from "../features/treatment_support/routes";
 
 export const dbConnection = async () => {
   try {
@@ -30,7 +31,8 @@ export const configureExpressApp = async (app: Application) => {
   // ------------------End middlewares------------------------
 
   //------------------- routes --------------------------------
-  app.use("/appointments", appointmentRouter)
+  app.use("/appointments", appointmentRouter);
+  app.use("/art-treatment-support", treatmentSupportRouter);
   //-------------------end routes-----------------------------
 
   //---------------- error handler -----------------------
