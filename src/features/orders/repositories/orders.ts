@@ -13,7 +13,21 @@ export class ARTDrugOrderRepository implements Repository<ARTDrugOrder> {
       select: {
         id: true,
         _count: true,
+        title: true,
+        remarks: true,
+        updatedAt: true,
         createdAt: true,
+        remiderNortificationDates: true,
+        feedBacks: {
+          select: {
+            id: true,
+            confirmedAttendance: true,
+            requestedHomeDelivery: true,
+            note: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
         distributionTime: true,
         distributionVenue: true,
         group: {
