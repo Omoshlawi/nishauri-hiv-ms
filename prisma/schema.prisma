@@ -10,3 +10,100 @@ datasource db {
   url      = env("DB_URL")
 }
 
+model ARTDrugOrder {
+  id              String              @id @default(uuid()) @db.Uuid
+  patient         Json
+  appointment     Json?
+  event           Json?
+  deliveryAddress Json
+  deliveryMethod  OrderDeliveryMethod
+  courierService  Json?
+  deliveryPerson  Json?
+  phoneNumber     String
+  type            OrderType
+  orderedBy       Json
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  deliveries      ARTDrugDelivery[]
+}
+
+model ARTDrugDelivery {
+  id              String         @id @default(uuid()) @db.Uuid
+  orderId         String         @db.Uuid
+  order           ARTDrugOrder   @relation(fields: [orderId], onDelete: Cascade, references: [id])
+  patient         Json //Subscriber
+  services        String[]       @default([])
+  method          DeliveryMethod
+  courierService  Json?
+  deliveryPerson  Json?
+  deliveryAddress Json?
+  eventId         String?        @db.Uuid
+  event           ARTEvent?      @relation(fields: [eventId], onDelete: SetNull, references: [id])
+  initiatedBy     Json
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+model ARTEvent {
+  id                        String            @id @default(uuid()) @db.Uuid
+  title                     String
+  distributionTime          DateTime
+  distributionVenue         String
+  remiderNortificationDates DateTime[]        @default([])
+  groupId                   String            @db.Uuid
+  group                     ARTGroup          @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  createdAt                 DateTime          @default(now())
+  updatedAt                 DateTime          @updatedAt
+  deliveries                ARTDrugDelivery[]
+  remarks                   String            @db.Text
+}
+
+model ARTGroup {
+  id               String                   @id @default(uuid()) @db.Uuid
+  title            String
+  description      String                   @db.Text
+  createdAt        DateTime                 @default(now())
+  updatedAt        DateTime                 @updatedAt
+  events           ARTEvent[]
+  extraSubscribers ExtraSubscriber[]
+  enrollments      ARTGroupUserEnrollment[]
+}
+
+model ARTGroupUserEnrollment {
+  id         String   @id @default(uuid()) @db.Uuid
+  groupId    String   @db.Uuid
+  group      ARTGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user       Json
+  isAdmin    Boolean  @default(false)
+  publicName String
+  isCurrent  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model ExtraSubscriber {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @db.VarChar(255)
+  cccNumber   String
+  phoneNumber String
+  groupId     String   @db.Uuid
+  group       ARTGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum OrderDeliveryMethod {
+  in_parcel
+  in_person
+}
+
+enum OrderType {
+  self
+  other
+}
+
+enum DeliveryMethod {
+  self
+  courier
+  patient_preference
+}
