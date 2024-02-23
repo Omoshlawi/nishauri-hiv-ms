@@ -82,7 +82,7 @@ export class ARTDrugOrderRepository implements Repository<ARTDrugOrder> {
   }
   findAll(): Promise<ARTDrugOrder[]> {
     return ARTDrugOrderModel.findMany({
-      select: {},
+      select: this.selectFields,
     });
   }
   findByCriteria(criteria: Record<string, any>): Promise<ARTDrugOrder[]> {

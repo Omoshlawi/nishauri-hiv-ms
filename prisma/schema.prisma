@@ -26,7 +26,6 @@ model ARTDrugOrder {
   createdAt       DateTime            @default(now())
   updatedAt       DateTime            @updatedAt
   deliveries      ARTDrugDelivery[]
-  feedBacks       ARTEventFeedBack[]
 }
 
 model ARTDrugDelivery {
@@ -63,23 +62,22 @@ model ARTEvent {
 }
 
 model ARTEventFeedBack {
-  id                    String        @id @default(uuid()) @db.Uuid
-  eventId               String?       @db.Uuid
-  event                 ARTEvent?     @relation(fields: [eventId], onDelete: SetNull, references: [id])
+  id                    String    @id @default(uuid()) @db.Uuid
+  eventId               String?   @db.Uuid
+  event                 ARTEvent? @relation(fields: [eventId], onDelete: SetNull, references: [id])
   confirmedAttendance   Boolean
   requestedHomeDelivery Boolean
+  note                  String?   @db.Text
   // orderId             String?       @db.Uuid
   // order               ARTDrugOrder? @relation(fields: [orderId], onDelete: SetNull, references: [id])
-  createdAt             DateTime      @default(now())
-  updatedAt             DateTime      @updatedAt
-  ARTDrugOrder          ARTDrugOrder? @relation(fields: [aRTDrugOrderId], references: [id])
-  aRTDrugOrderId        String?       @db.Uuid
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 }
 
 model ARTGroup {
   id               String                   @id @default(uuid()) @db.Uuid
   title            String
-  description      String                   @db.Text
+  description      String?                  @db.Text
   createdAt        DateTime                 @default(now())
   updatedAt        DateTime                 @updatedAt
   events           ARTEvent[]
