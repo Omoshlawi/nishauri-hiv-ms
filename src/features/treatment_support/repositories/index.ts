@@ -1,9 +1,7 @@
 import moment from "moment/moment";
 import { Repository } from "../../../shared/types";
 import { TreatmentSupport } from "../entities";
-// import { v4 as uuidv4 } from "uuid";
-
-
+import { v4 as uuidv4 } from "uuid";
 
 export class TreatentSupportRepository implements Repository<TreatmentSupport> {
   create(entity: TreatmentSupport): Promise<TreatmentSupport>;
@@ -15,11 +13,10 @@ export class TreatentSupportRepository implements Repository<TreatmentSupport> {
     throw new Error("Method not implemented.");
   }
 
-  
   async findAll(): Promise<TreatmentSupport[]> {
     return [
       {
-        id: "1",
+        id: uuidv4(),
         careGiver: {
           cccNumber: "1234500001",
           name: `Lawi Omosh`,
@@ -33,7 +30,7 @@ export class TreatentSupportRepository implements Repository<TreatmentSupport> {
         createdAt: moment(Date.now()).toISOString() as any,
       },
       {
-        id: "2",
+        id: uuidv4(),
         careGiver: {
           cccNumber: "1234500003",
           name: `Joseph Makoli`,

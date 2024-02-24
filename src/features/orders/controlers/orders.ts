@@ -27,9 +27,15 @@ export const createOrder = async (
   next: NextFunction
 ) => {
   try {
+    console.log(req.body);
+
     const validation = await OrderSchema.safeParseAsync(req.body);
-    if (!validation.success)
+    if (!validation.success) {
+      console.log(validation.error.format());
+
       throw new APIException(400, validation.error.format());
+    }
+    console.log(validation.data);
     const {
       deliveryAddress,
       deliveryMethod,
@@ -57,7 +63,7 @@ export const createOrder = async (
         };
       }
     }
-    if (mode === "event" && !(await artEventsRepo.exists({ id: event }))) {
+    if (mode === "event" && !(await artEventsRepo.exists({ id: event! }))) {
       throw {
         status: 400,
         errors: { event: { _errors: ["Invalid event"] } },

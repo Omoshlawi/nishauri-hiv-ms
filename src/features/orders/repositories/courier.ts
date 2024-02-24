@@ -12,11 +12,24 @@ export class CourierRepository implements Repository<Courier> {
     return (await this.findAll()).find((courier) => courier.id === id);
   }
   async findAll(): Promise<Courier[]> {
+    // const uuid = uuidv4()
     return [
-      { id: uuidv4(), name: "Boda boda" },
-      { id: uuidv4(), name: "boat service" },
-      { id: uuidv4(), name: "air service" },
-      { id: uuidv4(), name: "Glovo" },
+      {
+        id: "400873d3-a914-4693-beb0-08a891940fdf",
+        name: "Boda boda",
+      },
+      {
+        id: "0283a827-391c-44de-a574-78398cf10312",
+        name: "boat service",
+      },
+      {
+        id: "c6c790bd-3dec-4166-ab08-00c7f96d11f7",
+        name: "air service",
+      },
+      {
+        id: "2766f822-12ef-4bba-b9f7-47398c38e4c7",
+        name: "Glovo",
+      },
     ] as Courier[];
   }
   findByCriteria(criteria: Record<string, any>): Promise<Courier[]> {

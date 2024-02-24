@@ -5,11 +5,11 @@ export const OrderSchema = z
   .object({
     mode: z.enum(["event", "appointment"]),
     type: z.enum(["self", "other"]),
-    event: z.string().uuid().optional(),
-    appointment: z.string().optional(),
-    careReceiver: z.string().optional(),
+    event: z.string().uuid().optional().nullable(),
+    appointment: z.string().optional().nullable(),
+    careReceiver: z.string().optional().nullable(),
     deliveryMethod: z.enum(["in_parcel", "in_person"]),
-    courierService: z.string().uuid().optional(),
+    courierService: z.string().uuid().optional().nullable(),
     deliveryPerson: z
       .object({
         fullName: z.string(),
@@ -17,7 +17,8 @@ export const OrderSchema = z
         phoneNumber: z.string(),
         pickupTime: z.coerce.date(),
       })
-      .optional(),
+      .optional()
+      .nullable(),
     phoneNumber: z.string(),
     deliveryAddress: z.object({
       latitude: z.coerce.number(),
