@@ -10,8 +10,23 @@ export const getGroups = async (
 ) => {
   try {
     console.log((req as any).user);
-
     const results = await artGroupRepo.findAll();
+    return res.json({ results });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getMyGroupEnrollments = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    console.log((req as any).user);
+    const results = await artGroupRepo.findUseGroupEnrollments(
+      (req as any).user._id
+    );
     return res.json({ results });
   } catch (error) {
     next(error);
@@ -28,10 +43,22 @@ export const createGroups = async (
     if (!validation.success)
       throw new APIException(400, validation.error.format());
     // TODO validate if user has a group lead roll
+    // TODO Ensure no two extra subscriber has similar cccNumber
+    // TODO Validate cccNumber to see if its online user
+    // TODO Ensure curr user has no other group with similar name
+
     // 1.Creating group
     const group = await artGroupRepo.create(validation.data);
+    // TODO Give more comprehensive and relevant user object
+    const user = (req as any).user;
     // 2.Create enrollment with current user as the admin
-    const results = await artGroupRepo.findAll();
+    await artGroupRepo.createUserGroupEnrollments({
+      user: { id: user._id },
+      groupId: group.id,
+      isAdmin: true,
+      isCurrent: true,
+    });
+    const results = await artGroupRepo.findOneById(group.id);
     return res.json({ results });
   } catch (error) {
     next(error);

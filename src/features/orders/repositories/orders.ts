@@ -47,16 +47,7 @@ export class ARTDrugOrderRepository implements Repository<ARTDrugOrder> {
                 updatedAt: true,
               },
             },
-            extraSubscribers: {
-              select: {
-                id: true,
-                cccNumber: true,
-                phoneNumber: true,
-                name: true,
-                createdAt: true,
-                updatedAt: true,
-              },
-            },
+            extraSubscribers: true,
             createdAt: true,
             updatedAt: true,
           },

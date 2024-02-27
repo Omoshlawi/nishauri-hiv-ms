@@ -81,7 +81,7 @@ model ARTGroup {
   createdAt        DateTime                 @default(now())
   updatedAt        DateTime                 @updatedAt
   events           ARTEvent[]
-  extraSubscribers ExtraSubscriber[]
+  extraSubscribers Json
   enrollments      ARTGroupUserEnrollment[]
 }
 
@@ -91,21 +91,10 @@ model ARTGroupUserEnrollment {
   group      ARTGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
   user       Json
   isAdmin    Boolean  @default(false)
-  publicName String
+  publicName String?
   isCurrent  Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-}
-
-model ExtraSubscriber {
-  id          String   @id @default(uuid()) @db.Uuid
-  name        String   @db.VarChar(255)
-  cccNumber   String
-  phoneNumber String
-  groupId     String   @db.Uuid
-  group       ARTGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 }
 
 enum OrderDeliveryMethod {

@@ -1,21 +1,104 @@
-import { ARTGroup, Prisma } from "@prisma/client";
+import { ARTGroup, ARTGroupUserEnrollment, Prisma } from "@prisma/client";
 import { Repository } from "../../../shared/types";
-import { ARTGroupModel } from "../models";
+import { ARTGroupEnrollmentModel, ARTGroupModel } from "../models";
 
 export class ARTGroupRepository implements Repository<ARTGroup> {
+  selectFields: Prisma.ARTGroupSelect = {
+    id: true,
+    title: true,
+    description: true,
+    extraSubscribers: true,
+    enrollments: {
+      select: {
+        id: true,
+        isAdmin: true,
+        isCurrent: true,
+        publicName: true,
+        user: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    },
+    events: {
+      select: {
+        id: true,
+        title: true,
+        distributionTime: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    },
+    createdAt: true,
+    updatedAt: true,
+  };
+  enrollmentsSelectFields: Prisma.ARTGroupUserEnrollmentSelect = {
+    id: true,
+    group: {
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        extraSubscribers: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    },
+    isAdmin: true,
+    isCurrent: true,
+    publicName: true,
+    user: true,
+    createdAt: true,
+    updatedAt: true,
+  };
   create(entity: Partial<ARTGroup>): Promise<ARTGroup> {
     return ARTGroupModel.create({
-      data: { ...entity, title: entity.title! },
+      data: {
+        ...entity,
+        title: entity.title!,
+        extraSubscribers: entity.extraSubscribers!,
+      },
+      select: this.selectFields,
     });
   }
-  findOneById(id: string): Promise<ARTGroup | undefined> {
-    throw new Error("Method not implemented.");
+  async findOneById(id: string): Promise<ARTGroup | undefined> {
+    const group = await ARTGroupModel.findUnique({
+      where: { id },
+      select: this.selectFields,
+    });
+    return group ?? undefined;
   }
   findAll(): Promise<ARTGroup[]> {
-    throw new Error("Method not implemented.");
+    return ARTGroupModel.findMany({ select: this.selectFields });
   }
-  findByCriteria(criteria: Record<string, any>): Promise<ARTGroup[]> {
-    throw new Error("Method not implemented.");
+
+  findUseGroupEnrollments(userId: string): Promise<ARTGroupUserEnrollment[]> {
+    return ARTGroupEnrollmentModel.findMany({
+      where: {
+        user: {
+          path: ["_id"],
+          equals: userId,
+        },
+      },
+      select: this.enrollmentsSelectFields,
+    });
+  }
+
+  createUserGroupEnrollments(
+    entity: Partial<ARTGroupUserEnrollment>
+  ): Promise<ARTGroupUserEnrollment> {
+    return ARTGroupEnrollmentModel.create({
+      data: {
+        ...entity,
+        groupId: entity.groupId!,
+        user: entity.user!,
+      },
+    });
+  }
+  findByCriteria(criteria: Prisma.ARTGroupWhereInput): Promise<ARTGroup[]> {
+    return ARTGroupModel.findMany({
+      where: criteria,
+      select: this.selectFields,
+    });
   }
   updateById(
     id: string,
