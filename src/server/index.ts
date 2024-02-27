@@ -8,6 +8,7 @@ import { default as appointmentRouter } from "../features/appointments/routes";
 import { default as treatmentSupportRouter } from "../features/treatment_support/routes";
 import { default as ordersRouter } from "../features/orders/routes";
 import { default as cargsRouter } from "../features/cargs/routes";
+import authenticate from "../middlewares/authenticate";
 
 export const dbConnection = async () => {
   try {
@@ -30,6 +31,7 @@ export const configureExpressApp = async (app: Application) => {
   app.use(cors());
   app.use(express.json());
   app.use(express.static(MEDIA_ROOT));
+  app.use(authenticate);
   // ------------------End middlewares------------------------
 
   //------------------- routes --------------------------------

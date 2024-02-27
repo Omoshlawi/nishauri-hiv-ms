@@ -11,7 +11,9 @@ const authenticate = async (
   try {
     const decoded: any = jwt.decode(token);
     (req as any).user = { _id: decoded._id };
+    return next();
   } catch (error) {
-    next(error);
+    res.status(401).json({ detail: "Unauthorized - Invalid token" });
   }
 };
+export default authenticate;

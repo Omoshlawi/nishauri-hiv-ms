@@ -9,6 +9,8 @@ export const getGroups = async (
   next: NextFunction
 ) => {
   try {
+    console.log((req as any).user);
+
     const results = await artGroupRepo.findAll();
     return res.json({ results });
   } catch (error) {
