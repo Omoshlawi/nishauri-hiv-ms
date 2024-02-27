@@ -3,8 +3,10 @@ import { Repository } from "../../../shared/types";
 import { ARTGroupModel } from "../models";
 
 export class ARTGroupRepository implements Repository<ARTGroup> {
-  create(entity: ARTGroup): Promise<ARTGroup> {
-    throw new Error("Method not implemented.");
+  create(entity: Partial<ARTGroup>): Promise<ARTGroup> {
+    return ARTGroupModel.create({
+      data: { ...entity, title: entity.title! },
+    });
   }
   findOneById(id: string): Promise<ARTGroup | undefined> {
     throw new Error("Method not implemented.");

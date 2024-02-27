@@ -7,6 +7,7 @@ import logger from "../shared/logger";
 import { default as appointmentRouter } from "../features/appointments/routes";
 import { default as treatmentSupportRouter } from "../features/treatment_support/routes";
 import { default as ordersRouter } from "../features/orders/routes";
+import { default as cargsRouter } from "../features/cargs/routes";
 
 export const dbConnection = async () => {
   try {
@@ -35,6 +36,7 @@ export const configureExpressApp = async (app: Application) => {
   app.use("/appointments", appointmentRouter);
   app.use("/art-treatment-support", treatmentSupportRouter);
   app.use("/orders", ordersRouter);
+  app.use("/art-community", cargsRouter);
   //-------------------end routes-----------------------------
 
   //---------------- error handler -----------------------

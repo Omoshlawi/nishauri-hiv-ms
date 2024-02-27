@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { entries } from "lodash";
 import logger from "../shared/logger";
 
-export function handleErrors(
+function handleErrors(
   error: any,
   req: Request,
   res: Response,
