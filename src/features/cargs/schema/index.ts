@@ -13,3 +13,12 @@ export const ARTGroupSchema = z.object({
     )
     .default([]),
 });
+
+export const ARTEventchema = z.object({
+  title: z.string(),
+  distributionTime: z.coerce.date(),
+  distributionVenue: z.string(),
+  remiderNortificationDates: z.array(z.coerce.date()),
+  groupMembership: z.string().uuid(),
+  remarks: z.string().optional().nullable(),
+});

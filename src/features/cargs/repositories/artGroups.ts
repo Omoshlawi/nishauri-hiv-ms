@@ -75,12 +75,29 @@ export class ARTGroupRepository implements Repository<ARTGroup> {
     return ARTGroupEnrollmentModel.findMany({
       where: {
         user: {
-          path: ["_id"],
+          path: ["id"], //TODO Reset to  id after resting db
           equals: userId,
         },
       },
       select: this.enrollmentsSelectFields,
     });
+  }
+
+  async findUseGroupEnrollmentById(
+    userId: string,
+    enrollmentId: string
+  ): Promise<ARTGroupUserEnrollment | undefined> {
+    const enrollment = await ARTGroupEnrollmentModel.findUnique({
+      where: {
+        user: {
+          path: ["id"], //TODO Reset to  id after resting db
+          equals: userId,
+        },
+        id: enrollmentId,
+      },
+      select: this.enrollmentsSelectFields,
+    });
+    return enrollment ?? undefined;
   }
 
   createUserGroupEnrollments(

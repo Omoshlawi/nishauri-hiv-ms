@@ -10,7 +10,7 @@ const authenticate = async (
     return res.status(401).json({ detail: "Unauthorized - Token missing" });
   try {
     const decoded: any = jwt.decode(token);
-    (req as any).user = { _id: decoded._id };
+    (req as any).user = { id: decoded.id };
     return next();
   } catch (error) {
     res.status(401).json({ detail: "Unauthorized - Invalid token" });

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "ARTEvent" ALTER COLUMN "remarks" DROP NOT NULL;

@@ -55,9 +55,9 @@ model ARTEvent {
   group                     ARTGroup           @relation(fields: [groupId], references: [id], onDelete: Cascade)
   createdAt                 DateTime           @default(now())
   updatedAt                 DateTime           @updatedAt
-  deliveries                ARTDrugDelivery[]
-  remarks                   String             @db.Text
+  remarks                   String?             @db.Text
   orders                    ARTDrugOrder[]
+  deliveries                ARTDrugDelivery[]
   feedBacks                 ARTEventFeedBack[]
 }
 

@@ -25,7 +25,7 @@ export const getMyGroupEnrollments = async (
   try {
     console.log((req as any).user);
     const results = await artGroupRepo.findUseGroupEnrollments(
-      (req as any).user._id
+      (req as any).user.id
     );
     return res.json({ results });
   } catch (error) {
@@ -53,7 +53,7 @@ export const createGroups = async (
     const user = (req as any).user;
     // 2.Create enrollment with current user as the admin
     await artGroupRepo.createUserGroupEnrollments({
-      user: { id: user._id },
+      user: { id: user.id },
       groupId: group.id,
       isAdmin: true,
       isCurrent: true,
