@@ -16,6 +16,23 @@ export const getEvents = async (
     next(error);
   }
 };
+export const getMyEvents = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = (req as any).user;
+    const results = await artEventsRepo.findByCriteria({
+      group: {
+        enrollments: { some: { user: { path: "$.id", equals: user.id } } },
+      },
+    });
+    return res.json({ results });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const createEvents = async (
   req: Request,

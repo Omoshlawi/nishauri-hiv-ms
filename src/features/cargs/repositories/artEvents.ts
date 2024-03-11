@@ -68,10 +68,13 @@ export class ARTEventRepository implements Repository<ARTEvent> {
     throw new Error("Method not implemented.");
   }
   findAll(): Promise<ARTEvent[]> {
-    return ARTEventModel.findMany();
+    return ARTEventModel.findMany({ select: this.selectFields });
   }
-  findByCriteria(criteria: Record<string, any>): Promise<ARTEvent[]> {
-    throw new Error("Method not implemented.");
+  findByCriteria(criteria: Prisma.ARTEventWhereInput): Promise<ARTEvent[]> {
+    return ARTEventModel.findMany({
+      select: this.selectFields,
+      where: criteria,
+    });
   }
   async updateById(
     id: string,
