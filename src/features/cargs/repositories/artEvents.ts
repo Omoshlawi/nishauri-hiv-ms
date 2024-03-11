@@ -73,11 +73,28 @@ export class ARTEventRepository implements Repository<ARTEvent> {
   findByCriteria(criteria: Record<string, any>): Promise<ARTEvent[]> {
     throw new Error("Method not implemented.");
   }
-  updateById(
+  async updateById(
     id: string,
-    updates: Partial<ARTEvent>
+    updates: Partial<ARTEvent> & { remiderNortificationDates?: Date[] }
   ): Promise<ARTEvent | undefined> {
-    throw new Error("Method not implemented.");
+    const res = await ARTEventModel.update({
+      where: { id },
+      data: {
+        ...updates,
+        remiderNortificationDates: {
+          deleteMany: { time: { notIn: updates.remiderNortificationDates } },
+          createMany: {
+            data:
+              updates.remiderNortificationDates?.map((time) => ({
+                time,
+              })) ?? [],
+            skipDuplicates: true,
+          },
+        },
+      },
+      select: this.selectFields,
+    });
+    return res ?? undefined;
   }
   deleteById(id: string): Promise<void> {
     throw new Error("Method not implemented.");

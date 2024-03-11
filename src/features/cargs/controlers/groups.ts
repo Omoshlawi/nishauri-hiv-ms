@@ -66,7 +66,10 @@ export const updateGroup = async (
   next: NextFunction
 ) => {
   try {
-    if (!z.string().uuid().safeParse(req.params.id).success) {
+    if (
+      !z.string().uuid().safeParse(req.params.id).success ||
+      !(await artGroupRepo.exists({ id: req.params.id }))
+    ) {
       throw { status: 404, errors: { detail: "ART Group not found" } };
     }
     const validation = await ARTGroupSchema.safeParseAsync(req.body);
@@ -76,14 +79,10 @@ export const updateGroup = async (
     // TODO Validate cccNumber to see if its online user
     // TODO Ensure curr user has no other group with similar name
 
-    // 1.Creating group with extra subscribers ignoring duplicate subscriber with same ccNumber
-    // also create enrollment with curr user as admin
-    // TODO Give more comprehensive and relevant user object
+    // 1.update group with extra subscribers ignoring duplicate subscriber with same ccNumber
+    // also deleting extra subscribers not in update list
     const user = (req as any).user;
-    const group = await artGroupRepo.create({
-      ...validation.data,
-      enrollments: { user: { id: user.id } },
-    });
+    const group = await artGroupRepo.updateById(req.params.id, validation.data);
     return res.json(group);
   } catch (error) {
     next(error);

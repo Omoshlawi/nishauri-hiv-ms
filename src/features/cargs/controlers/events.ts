@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { artEventsRepo, artGroupRepo } from "../repositories";
 import { ARTEventchema } from "../schema";
 import { APIException } from "../../../shared/exceprions";
+import { z } from "zod";
 
 export const getEvents = async (
   req: Request,
@@ -38,6 +39,43 @@ export const createEvents = async (
       });
     }
     const results = await artEventsRepo.create({
+      ...eventData,
+      groupId: enrollment.groupId,
+    });
+    return res.json(results);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateEvent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    if (
+      !z.string().uuid().safeParse(req.params.id).success ||
+      !(await artEventsRepo.exists({ id: req.params.id }))
+    ) {
+      throw { status: 404, errors: { detail: "ART event not found" } };
+    }
+    const validation = await ARTEventchema.safeParseAsync(req.body);
+    if (!validation.success)
+      throw new APIException(400, validation.error.format());
+    const user = (req as any).user;
+    const { groupMembership, ...eventData } = validation.data;
+    // 1.Ensure membership exist and isAdmin
+    const enrollment = await artGroupRepo.findUseGroupEnrollmentById(
+      user.id,
+      groupMembership
+    );
+    if (!enrollment || !enrollment.isAdmin) {
+      throw new APIException(400, {
+        groupMembership: { _errors: ["Invalid group or you aunt group admin"] },
+      });
+    }
+    const results = await artEventsRepo.updateById(req.params.id, {
       ...eventData,
       groupId: enrollment.groupId,
     });

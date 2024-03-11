@@ -138,11 +138,35 @@ export class ARTGroupRepository implements Repository<ARTGroup> {
       select: this.selectFields,
     });
   }
-  updateById(
+  async updateById(
     id: string,
-    updates: Partial<ARTGroup>
+    updates: Partial<ARTGroup> & {
+      extraSubscribers?: {
+        name: string;
+        cccNumber: string;
+        phoneNumber: string;
+      }[];
+    }
   ): Promise<ARTGroup | undefined> {
-    throw new Error("Method not implemented.");
+    const res = await ARTGroupModel.update({
+      select: this.selectFields,
+      where: { id },
+      data: {
+        ...updates,
+        extraSubscribers: {
+          deleteMany: {
+            cccNumber: {
+              notIn: updates.extraSubscribers?.map((e) => e.cccNumber) ?? [],
+            },
+          },
+          createMany: {
+            data: updates?.extraSubscribers ?? [],
+            skipDuplicates: true,
+          },
+        },
+      },
+    });
+    return res ?? undefined;
   }
   deleteById(id: string): Promise<void> {
     throw new Error("Method not implemented.");
