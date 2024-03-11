@@ -91,14 +91,27 @@ model ARTEventFeedBack {
 }
 
 model ARTGroup {
-  id               String                   @id @default(uuid())
+  id               String                    @id @default(uuid())
   title            String
-  description      String?                  @db.Text
-  createdAt        DateTime                 @default(now())
-  updatedAt        DateTime                 @updatedAt
+  description      String?                   @db.Text
+  createdAt        DateTime                  @default(now())
+  updatedAt        DateTime                  @updatedAt
   events           ARTEvent[]
-  extraSubscribers Json
+  extraSubscribers ARTGroupExtraSubscriber[]
   enrollments      ARTGroupUserEnrollment[]
+}
+
+model ARTGroupExtraSubscriber {
+  id          String   @id @default(uuid())
+  groupId     String
+  group       ARTGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  name        String
+  cccNumber   String
+  phoneNumber String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([groupId, cccNumber])
 }
 
 model ARTGroupUserEnrollment {

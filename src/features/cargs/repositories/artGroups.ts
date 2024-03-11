@@ -50,12 +50,32 @@ export class ARTGroupRepository implements Repository<ARTGroup> {
     createdAt: true,
     updatedAt: true,
   };
-  create(entity: Partial<ARTGroup>): Promise<ARTGroup> {
+  create(
+    entity: Partial<ARTGroup> & { enrollments?: { user: { id: string } } } & {
+      extraSubscribers?: {
+        name: string;
+        cccNumber: string;
+        phoneNumber: string;
+      }[];
+    }
+  ): Promise<ARTGroup> {
     return ARTGroupModel.create({
       data: {
         ...entity,
         title: entity.title!,
-        extraSubscribers: entity.extraSubscribers!,
+        extraSubscribers: {
+          createMany: {
+            data: entity?.extraSubscribers ?? [],
+            skipDuplicates: true,
+          },
+        },
+        enrollments: {
+          create: {
+            ...entity.enrollments!,
+            isAdmin: true,
+            isCurrent: true,
+          },
+        },
       },
       select: this.selectFields,
     });
@@ -75,7 +95,7 @@ export class ARTGroupRepository implements Repository<ARTGroup> {
     return ARTGroupEnrollmentModel.findMany({
       where: {
         user: {
-          path: ["id"], //TODO Reset to  id after resting db
+          path: "$.id",
           equals: userId,
         },
       },
@@ -90,7 +110,7 @@ export class ARTGroupRepository implements Repository<ARTGroup> {
     const enrollment = await ARTGroupEnrollmentModel.findUnique({
       where: {
         user: {
-          path: ["id"], //TODO Reset to  id after resting db
+          path: "$.id",
           equals: userId,
         },
         id: enrollmentId,
