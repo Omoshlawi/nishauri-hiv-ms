@@ -41,7 +41,9 @@ export class ARTEventRepository implements Repository<ARTEvent> {
     orders: true,
   };
 
-  create(entity: Partial<ARTEvent>): Promise<ARTEvent> {
+  create(
+    entity: Partial<ARTEvent> & { remiderNortificationDates?: Date[] }
+  ): Promise<ARTEvent> {
     return ARTEventModel.create({
       data: {
         ...entity,
@@ -49,6 +51,15 @@ export class ARTEventRepository implements Repository<ARTEvent> {
         distributionVenue: entity.distributionVenue!,
         title: entity.title!,
         groupId: entity.groupId!,
+        remiderNortificationDates: {
+          createMany: {
+            data:
+              entity.remiderNortificationDates?.map((time) => ({
+                time,
+              })) ?? [],
+            skipDuplicates: true,
+          },
+        },
       },
       select: this.selectFields,
     });

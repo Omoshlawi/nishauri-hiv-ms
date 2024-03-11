@@ -75,6 +75,8 @@ model ARTEventNotificationTime {
   eventId String
   event   ARTEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
   time    DateTime
+
+  @@unique([time, eventId])
 }
 
 model ARTEventFeedBack {

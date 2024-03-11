@@ -33,6 +33,7 @@ export class ARTGroupRepository implements Repository<ARTGroup> {
   };
   enrollmentsSelectFields: Prisma.ARTGroupUserEnrollmentSelect = {
     id: true,
+    groupId: true,
     group: {
       select: {
         id: true,

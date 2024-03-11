@@ -34,7 +34,7 @@ export const createEvents = async (
     );
     if (!enrollment || !enrollment.isAdmin) {
       throw new APIException(400, {
-        groupMembership: { _errors: ["Invalid group"] },
+        groupMembership: { _errors: ["Invalid group or you aunt group admin"] },
       });
     }
     const results = await artEventsRepo.create({

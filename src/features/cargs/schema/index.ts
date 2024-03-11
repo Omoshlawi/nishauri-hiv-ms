@@ -16,9 +16,14 @@ export const ARTGroupSchema = z.object({
 
 export const ARTEventchema = z.object({
   title: z.string(),
-  distributionTime: z.coerce.date(),
+  distributionTime: z.coerce
+    .date()
+    .min(new Date(Date.now()), "Must be a future date"),
   distributionVenue: z.string(),
-  remiderNortificationDates: z.array(z.coerce.date()),
+  remiderNortificationDates: z
+    .array(z.coerce.date().min(new Date(Date.now()), "Must be a future date"))
+    .optional()
+    .default([]),
   groupMembership: z.string().uuid(),
   remarks: z.string().optional().nullable(),
 });
