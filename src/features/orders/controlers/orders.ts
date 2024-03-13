@@ -83,6 +83,7 @@ export const createOrder = async (
       // 1. Get care receiver by cccNumber
       // 2. Assertain careReceiver is given care by curr User i.e curr User is care giver to the careReceiver
       const _careReceiver = await treatmentSurportRepo.findOneById(cccNumber!);
+      
     } else {
       // ensure curr user is patient User current user
     }

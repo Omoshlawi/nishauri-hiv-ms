@@ -12,6 +12,12 @@ export class TreatentSupportRepository implements Repository<TreatmentSupport> {
   findOneById(id: string): Promise<TreatmentSupport | undefined> {
     throw new Error("Method not implemented.");
   }
+  async findOneCCCNumber(
+    cccNumber: string
+  ): Promise<TreatmentSupport | undefined> {
+    const tsupport = await this.findAll();
+    return tsupport.find((t) => t.careReceiver.cccNumber === cccNumber);
+  }
 
   async findAll(): Promise<TreatmentSupport[]> {
     return [
