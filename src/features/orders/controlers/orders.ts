@@ -35,8 +35,6 @@ export const createOrder = async (
   next: NextFunction
 ) => {
   try {
-    console.log(req.body);
-
     const validation = await OrderSchema.safeParseAsync(req.body);
     if (!validation.success) {
       throw new APIException(400, validation.error.format());
@@ -60,8 +58,13 @@ export const createOrder = async (
     let _patient;
 
     // TODO Ensure appointment exists and get its detail info
-    if (mode === "appointment") {
-      _appointment = await appointmentRepo.findOneById(appointment!);
+    if (mode === "appointment" && type === "self") {
+      _appointment = await appointmentRepo.findOneById(
+        appointment!,
+        user as string
+      );
+      console.log("===========================", _appointment);
+
       // TODO Ensure appointment if refill and is upcoming in not more than next 1 week
       if (!_appointment || _appointment.appointment_type !== "Re-Fill") {
         throw {
@@ -69,6 +72,13 @@ export const createOrder = async (
           errors: { appointment: { _errors: ["Invalid appointment"] } },
         };
       }
+    }
+    // TODO Remember to handle appointment ased order for treatment supporter by requesting theire apppointment
+    else if (mode === "appointment" && type === "other") {
+      throw {
+        status: 403,
+        errors: { detail: "Treatment support not supported yet" },
+      };
     }
     if (mode === "event" && !(await artEventsRepo.exists({ id: event! }))) {
       throw {
