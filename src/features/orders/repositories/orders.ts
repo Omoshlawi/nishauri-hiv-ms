@@ -12,42 +12,20 @@ export class ARTDrugOrderRepository implements Repository<ARTDrugOrder> {
     event: {
       select: {
         id: true,
-        _count: true,
         title: true,
         remarks: true,
         updatedAt: true,
         createdAt: true,
+        _count: true,
         remiderNortificationDates: true,
-        feedBacks: {
-          select: {
-            id: true,
-            confirmedAttendance: true,
-            requestedHomeDelivery: true,
-            note: true,
-            createdAt: true,
-            updatedAt: true,
-          },
-        },
         distributionTime: true,
         distributionVenue: true,
         group: {
           select: {
             id: true,
-            _count: true,
             title: true,
             description: true,
-            enrollments: {
-              select: {
-                id: true,
-                isAdmin: true,
-                isCurrent: true,
-                publicName: true,
-                user: true,
-                createdAt: true,
-                updatedAt: true,
-              },
-            },
-            extraSubscribers: true,
+            _count: true,
             createdAt: true,
             updatedAt: true,
           },

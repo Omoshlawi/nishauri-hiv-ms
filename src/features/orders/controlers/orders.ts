@@ -7,6 +7,7 @@ import { Appointment } from "../../appointments/entities";
 import { Courier } from "../entities";
 import { artEventsRepo } from "../../cargs/repositories";
 import { treatmentSurportRepo } from "../../treatment_support/repositories";
+import { patientRepo } from "../../patients/repositories";
 
 export const getOrders = async (
   req: Request,
@@ -18,8 +19,8 @@ export const getOrders = async (
     if (!user) throw { status: 401, errors: { detail: "User required" } };
     const results = await ordersRepo.findByCriteria({
       OR: [
-        {orderedBy: { path: "$.id", equals: user } },
-        { patient: { path: "$.id", equals: user }},
+        { orderedBy: { path: "$.id", equals: user } },
+        { patient: { path: "$.id", equals: user } },
       ],
     });
     return res.json({ results });
@@ -42,7 +43,7 @@ export const createOrder = async (
     }
     const user = req.query.user_id;
     if (!user) throw { status: 401, errors: { detail: "User required" } };
-        const {
+    const {
       deliveryAddress,
       deliveryMethod,
       phoneNumber,
@@ -88,9 +89,11 @@ export const createOrder = async (
     if (type === "other") {
       // 1. Get care receiver by cccNumber
       // 2. Assertain careReceiver is given care by curr User i.e curr User is care giver to the careReceiver
+      // TODO Handler none nishauri user
       const _careReceiver = await treatmentSurportRepo.findOneById(cccNumber!);
     } else {
       // ensure curr user is patient User current user
+      _patient = await patientRepo.findOneById(user as string);
     }
 
     if (!_patient) {
@@ -115,7 +118,8 @@ export const createOrder = async (
               pickupTime: deliveryPerson!.pickupTime.toISOString(),
             }
           : undefined,
-      patient: _patient,
+      patient: _patient as any,
+      orderedBy: { id: user },
     });
     // const results = await ordersRepo.findAll();
     return res.json(order);
