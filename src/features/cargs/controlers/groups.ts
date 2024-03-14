@@ -23,10 +23,9 @@ export const getMyGroupEnrollments = async (
   next: NextFunction
 ) => {
   try {
-    console.log((req as any).user);
-    const results = await artGroupRepo.findUseGroupEnrollments(
-      (req as any).user.id
-    );
+    const user = req.query.user_id;
+    if (!user) throw { status: 401, errors: { detail: "User required" } };
+    const results = await artGroupRepo.findUseGroupEnrollments(user as string);
     return res.json({ results });
   } catch (error) {
     next(error);
@@ -49,10 +48,11 @@ export const createGroups = async (
     // 1.Creating group with extra subscribers ignoring duplicate subscriber with same ccNumber
     // also create enrollment with curr user as admin
     // TODO Give more comprehensive and relevant user object
-    const user = (req as any).user;
+    const user = req.query.user_id;
+    if (!user) throw { status: 401, errors: { detail: "User required" } };
     const group = await artGroupRepo.create({
       ...validation.data,
-      enrollments: { user: { id: user.id } },
+      enrollments: { user: { id: user as string } },
     });
     return res.json(group);
   } catch (error) {
@@ -81,7 +81,8 @@ export const updateGroup = async (
 
     // 1.update group with extra subscribers ignoring duplicate subscriber with same ccNumber
     // also deleting extra subscribers not in update list
-    const user = (req as any).user;
+    const user = req.query.user_id;
+    if (!user) throw { status: 401, errors: { detail: "User required" } };
     const group = await artGroupRepo.updateById(req.params.id, validation.data);
     return res.json(group);
   } catch (error) {

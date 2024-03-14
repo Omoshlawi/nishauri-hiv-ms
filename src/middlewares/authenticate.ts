@@ -5,7 +5,8 @@ const authenticate = async (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.header("x-access-token");
+  return next();
+  /*const token = req.header("x-access-token");
   if (!token)
     return res.status(401).json({ detail: "Unauthorized - Token missing" });
   try {
@@ -14,6 +15,6 @@ const authenticate = async (
     return next();
   } catch (error) {
     res.status(401).json({ detail: "Unauthorized - Invalid token" });
-  }
+  }*/
 };
 export default authenticate;

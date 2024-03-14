@@ -30,12 +30,8 @@ async function getService(serviceName: string) {
   }
 }
 
-async function callService(
-  serviceName: string,
-  requestOptions: AxiosRequestConfig
-) {
-  const { host, port } = await getService(serviceName);
-  requestOptions.url = `http://${host}:${port}/${requestOptions.url}`;
+async function callNishauriService(requestOptions: AxiosRequestConfig) {
+  requestOptions.url = `https://ushauriapi.kenyahmis.org/nishauri/${requestOptions.url}`;
   try {
     const response: AxiosResponse<any> = await axios(requestOptions);
     return response.data;
@@ -44,23 +40,28 @@ async function callService(
       const axiosError: AxiosError = error;
       if (axiosError.response?.status === 404) {
         throw {
-          status: axiosError.status,
-          errors: (axiosError.response.data as any).detail,
+          status: axiosError.response?.status,
+          errors: { detail: "Not found" },
+        };
+      } else if (axiosError.response?.status === 401) {
+        throw {
+          status: axiosError.response?.status,
+          errors: { detail: "Unauthorized" },
         };
       }
       throw {
-        status: axiosError.status,
-        errors: axiosError.message,
+        status: axiosError.response?.status,
+        errors: { detail: axiosError.message },
       };
     }
     throw {
       status: 500,
-      errors: error.message,
+      errors: { detail: error.message },
     };
   }
 }
 
 export default {
   getService,
-  callService,
+  callNishauriService,
 };

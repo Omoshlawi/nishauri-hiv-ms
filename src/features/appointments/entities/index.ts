@@ -3,8 +3,9 @@ import { Entity } from "../../../shared/types";
 export interface Appointment extends Entity {
   id: string;
   cccNumber: string;
-  appointmentType: "Re-Fill" | "Clinical Review" | "PCR" | "Lab Investigation";
-  appointmentDate: string;
-  dateAttended?: string;
+  appointment_type: string;
+  appointment_date: string;
+  appt_status: string;
+  appointment: string;
   nextAppointmentDate: string;
 }

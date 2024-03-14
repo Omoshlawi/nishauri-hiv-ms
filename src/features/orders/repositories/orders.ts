@@ -92,8 +92,13 @@ export class ARTDrugOrderRepository implements Repository<ARTDrugOrder> {
       select: this.selectFields,
     });
   }
-  findByCriteria(criteria: Record<string, any>): Promise<ARTDrugOrder[]> {
-    throw new Error("Method not implemented.");
+  findByCriteria(
+    criteria: Prisma.ARTDrugOrderWhereInput
+  ): Promise<ARTDrugOrder[]> {
+    return ARTDrugOrderModel.findMany({
+      select: this.selectFields,
+      where: criteria,
+    });
   }
   updateById(
     id: string,

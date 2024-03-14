@@ -35,10 +35,10 @@ export const configureExpressApp = async (app: Application) => {
   // ------------------End middlewares------------------------
 
   //------------------- routes --------------------------------
-  app.use("/appointments", appointmentRouter);
-  app.use("/art-treatment-support", treatmentSupportRouter);
-  app.use("/orders", ordersRouter);
-  app.use("/art-community", cargsRouter);
+  app.use("/hiv-program/appointments", appointmentRouter);
+  app.use("/hiv-program/art-treatment-support", treatmentSupportRouter);
+  app.use("/hiv-program/orders", ordersRouter);
+  app.use("/hiv-program/art-community", cargsRouter);
   //-------------------end routes-----------------------------
 
   //---------------- error handler -----------------------

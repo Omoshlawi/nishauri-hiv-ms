@@ -22,10 +22,12 @@ export const getMyEvents = async (
   next: NextFunction
 ) => {
   try {
-    const user = (req as any).user;
+    const user = req.query.user_id;
+    if (!user) throw { status: 403, errors: { detail: "User required" } };
+
     const results = await artEventsRepo.findByCriteria({
       group: {
-        enrollments: { some: { user: { path: "$.id", equals: user.id } } },
+        enrollments: { some: { user: { path: "$.id", equals: user } } },
       },
     });
     return res.json({ results });
@@ -43,11 +45,12 @@ export const createEvents = async (
     const validation = await ARTEventchema.safeParseAsync(req.body);
     if (!validation.success)
       throw new APIException(400, validation.error.format());
-    const user = (req as any).user;
+    const user = req.query.user_id;
+    if (!user) throw { status: 401, errors: { detail: "User required" } };
     const { groupMembership, ...eventData } = validation.data;
     // 1.Ensure membership exist and isAdmin
     const enrollment = await artGroupRepo.findUseGroupEnrollmentById(
-      user.id,
+      user as string,
       groupMembership
     );
     if (!enrollment || !enrollment.isAdmin) {
@@ -80,11 +83,13 @@ export const updateEvent = async (
     const validation = await ARTEventchema.safeParseAsync(req.body);
     if (!validation.success)
       throw new APIException(400, validation.error.format());
-    const user = (req as any).user;
+    const user = req.query.user_id;
+    if (!user) throw { status: 401, errors: { detail: "User required" } };
+
     const { groupMembership, ...eventData } = validation.data;
     // 1.Ensure membership exist and isAdmin
     const enrollment = await artGroupRepo.findUseGroupEnrollmentById(
-      user.id,
+      user as string,
       groupMembership
     );
     if (!enrollment || !enrollment.isAdmin) {

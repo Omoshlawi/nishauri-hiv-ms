@@ -14,7 +14,14 @@ export const getOrders = async (
   next: NextFunction
 ) => {
   try {
-    const results = await ordersRepo.findAll();
+    const user = req.query.user_id;
+    if (!user) throw { status: 401, errors: { detail: "User required" } };
+    const results = await ordersRepo.findByCriteria({
+      OR: [
+        {orderedBy: { path: "$.id", equals: user } },
+        { patient: { path: "$.id", equals: user }},
+      ],
+    });
     return res.json({ results });
   } catch (error) {
     next(error);
@@ -31,12 +38,11 @@ export const createOrder = async (
 
     const validation = await OrderSchema.safeParseAsync(req.body);
     if (!validation.success) {
-      console.log(validation.error.format());
-
       throw new APIException(400, validation.error.format());
     }
-    console.log(validation.data);
-    const {
+    const user = req.query.user_id;
+    if (!user) throw { status: 401, errors: { detail: "User required" } };
+        const {
       deliveryAddress,
       deliveryMethod,
       phoneNumber,
@@ -56,7 +62,7 @@ export const createOrder = async (
     if (mode === "appointment") {
       _appointment = await appointmentRepo.findOneById(appointment!);
       // TODO Ensure appointment if refill and is upcoming in not more than next 1 week
-      if (!_appointment || _appointment.appointmentType !== "Re-Fill") {
+      if (!_appointment || _appointment.appointment_type !== "Re-Fill") {
         throw {
           status: 400,
           errors: { appointment: { _errors: ["Invalid appointment"] } },
@@ -83,7 +89,6 @@ export const createOrder = async (
       // 1. Get care receiver by cccNumber
       // 2. Assertain careReceiver is given care by curr User i.e curr User is care giver to the careReceiver
       const _careReceiver = await treatmentSurportRepo.findOneById(cccNumber!);
-      
     } else {
       // ensure curr user is patient User current user
     }
