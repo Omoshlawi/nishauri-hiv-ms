@@ -117,15 +117,16 @@ model ARTGroupExtraSubscriber {
 }
 
 model ARTGroupUserEnrollment {
-  id         String   @id @default(uuid())
-  groupId    String
-  group      ARTGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  user       Json
-  isAdmin    Boolean  @default(false)
-  publicName String?
-  isCurrent  Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id           String   @id @default(uuid())
+  groupId      String
+  group        ARTGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user         Json
+  isAdmin      Boolean  @default(false)
+  hasConcented Boolean  @default(false)
+  publicName   String?
+  isCurrent    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 enum OrderDeliveryMethod {

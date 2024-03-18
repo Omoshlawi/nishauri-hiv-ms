@@ -14,6 +14,10 @@ export const ARTGroupSchema = z.object({
     .default([]),
 });
 
+export const ARTGroupEnrollmentSchema = z.object({
+  cccNumber: z.string(),
+});
+
 export const ARTEventchema = z.object({
   title: z.string(),
   distributionTime: z.coerce

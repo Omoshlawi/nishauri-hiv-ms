@@ -30,8 +30,11 @@ async function getService(serviceName: string) {
   }
 }
 
-async function callNishauriService(requestOptions: AxiosRequestConfig) {
-  requestOptions.url = `https://ushauriapi.kenyahmis.org/nishauri/${requestOptions.url}`;
+async function callNishauriService(
+  requestOptions: AxiosRequestConfig,
+  basePath: string = "nishauri"
+) {
+  requestOptions.url = `https://ushauriapi.kenyahmis.org/${basePath}/${requestOptions.url}`;
   try {
     const response: AxiosResponse<any> = await axios(requestOptions);
     return response.data;

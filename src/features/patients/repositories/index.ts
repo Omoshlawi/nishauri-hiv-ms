@@ -15,6 +15,24 @@ export class PatientRepository implements Repository<Patient> {
     });
     return patientProfile.data[0];
   }
+  async findOneByCCCNumber(cccNumber: string): Promise<Patient | undefined> {
+    const patientProfile = await ServiceClient.callNishauriService(
+      {
+        url: "search_ccc",
+        params: { client_id: cccNumber },
+      },
+      "mohupi"
+    );
+    if (patientProfile.success)
+      return {
+        id: patientProfile.message.id,
+        client_name: `${patientProfile.message.f_name ?? ""} ${
+          patientProfile.message.m_name
+        } ${patientProfile.message.l_name}`,
+        clinic_number: patientProfile.message.clinic_number,
+      };
+    else throw { status: 404, errors: { detail: "Patient not found" } };
+  }
   findAll(): Promise<Patient[]> {
     throw new Error("Method not implemented.");
   }

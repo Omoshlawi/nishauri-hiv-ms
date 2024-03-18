@@ -4,9 +4,9 @@ import { createServer } from "http";
 import { configureExpressApp, dbConnection } from "./server";
 import { configuration } from "./utils";
 
-import { registry } from "./utils";
-import { toNumber } from "lodash";
-import logger from "./shared/logger";
+// import { registry } from "./utils";
+// import { toNumber } from "lodash";
+// import logger from "./shared/logger";
 
 
 const startServer = async () => {
@@ -21,7 +21,7 @@ const startServer = async () => {
   const port = configuration.port ?? 0;
   httpServer.listen(port, () => {
     // Do not touch
-    
+    /*
     const address: any = httpServer.address();
 
     const { register, unregister } = registry(
@@ -48,6 +48,7 @@ const startServer = async () => {
     logger.info(
       `[+]${configuration.name}:${configuration.version} listening on ${bind}`
     );
+    */
   });
 };
 

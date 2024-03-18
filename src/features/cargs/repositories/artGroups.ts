@@ -75,6 +75,7 @@ export class ARTGroupRepository implements Repository<ARTGroup> {
             ...entity.enrollments!,
             isAdmin: true,
             isCurrent: true,
+            hasConcented: true,
           },
         },
       },
@@ -100,6 +101,14 @@ export class ARTGroupRepository implements Repository<ARTGroup> {
           equals: userId,
         },
       },
+      select: this.enrollmentsSelectFields,
+    });
+  }
+  findGroupEnrollmentsByCriteria(
+    criteria: Prisma.ARTGroupUserEnrollmentWhereInput
+  ): Promise<ARTGroupUserEnrollment[]> {
+    return ARTGroupEnrollmentModel.findMany({
+      where: criteria,
       select: this.enrollmentsSelectFields,
     });
   }
